@@ -5,158 +5,207 @@
   <title>Vuelos - Reservas</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <header>
-    <h1>Vuelos disponibles</h1>
-    <p>
-      <button id="logoutBtn">Cerrar sesión</button>
-      <button id="myResBtn">Ver mis reservas</button>
-      <span id="userInfo"></span>
-    </p>
-  </header>
 
-  <main>
-    <section aria-labelledby="flightsTitle">
-      <h2 id="flightsTitle">Lista de vuelos</h2>
-      <ul id="flightsList"></ul>
-    </section>
+<header>
+  <h1>Vuelos disponibles</h1>
+</header>
 
-    <section aria-labelledby="seatsTitle" id="seatsSection" hidden>
-      <h2 id="seatsTitle">Asientos del vuelo <span id="flightLabel"></span></h2>
-      <ul id="seatsList"></ul>
-    </section>
+<nav>
+  <button id="logoutBtn">Cerrar sesión</button>
+  <button id="myResBtn">Mis reservas</button>
+  <span id="userInfo"></span>
+</nav>
 
-    <section id="msg" aria-live="polite"></section>
-  </main>
+<main>
 
-  <script>
-    const API_BASE = 'https://proyecto-sis.onrender.com';
-    const flightsList = document.getElementById('flightsList');
-    const seatsSection = document.getElementById('seatsSection');
-    const seatsList = document.getElementById('seatsList');
-    const flightLabel = document.getElementById('flightLabel');
-    const msg = document.getElementById('msg');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const myResBtn = document.getElementById('myResBtn');
-    const userInfo = document.getElementById('userInfo');
+  <section aria-labelledby="flightsTitle">
+    <h2 id="flightsTitle">Lista de vuelos</h2>
+    <ul id="flightsList"></ul>
+  </section>
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      // si no hay token, redirigir al login
-      location.href = 'login.html';
-    } else {
-      userInfo.textContent = ' (autenticado)';
-    }
+  <section aria-labelledby="seatsTitle" id="seatsSection" hidden>
+    <h2 id="seatsTitle">Asientos del vuelo <span id="flightLabel"></span></h2>
+    <ul id="seatsList"></ul>
+  </section>
 
-    // Cerrar sesión
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('token');
-      location.href = 'login.html';
-    });
+  <section id="msg" aria-live="polite"></section>
 
-    // Ver mis reservas
-    myResBtn.addEventListener('click', () => {
-      location.href = 'my-reservations.html';
-    });
+</main>
 
-    // Cargar vuelos
-    async function loadFlights() {
-      msg.textContent = 'Cargando vuelos...';
-      try {
-        const res = await fetch(API_BASE + '/flights');
-        const flights = await res.json();
-        flightsList.innerHTML = '';
-        if (!Array.isArray(flights) || flights.length === 0) {
-          flightsList.innerHTML = '<li>No hay vuelos.</li>';
-          msg.textContent = '';
-          return;
-        }
-        flights.forEach(f => {
-          const li = document.createElement('li');
-          li.innerHTML = `<strong>#${f.id}</strong> ${f.origin} → ${f.destination} (Salida: ${f.departure})
-            <button data-id="${f.id}" data-origin="${f.origin}" data-dest="${f.destination}">Ver asientos</button>`;
-          flightsList.appendChild(li);
-        });
+<footer>
+  <a href="https://github.com/SANTONXD/VUELOS-FRONTEND/tree/main" target="_blank" title="Ver proyecto en GitHub">
+    <svg height="26" width="26" viewBox="0 0 16 16" fill="#b44a55">
+      <path d="M8 0C3.58 0 0 3.58 0 8a8 
+        8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
+        0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+        -.28-.15-.68-.52 0-.53.63-.01 1.08.58 1.23.82.72 1.21 
+        1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+        0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 
+        0 0 .67-.21 2.2.82a7.52 7.52 0 0 1 2-.27c.68 0 
+        1.36.09 2 .27 1.52-1.04 2.2-.82 2.2-.82.44 
+        1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 
+        0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 
+        0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 
+        8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+    </svg>
+  </a>
+</footer>
+
+<script>
+  const API_BASE = 'https://proyecto-sis.onrender.com';
+  const flightsList = document.getElementById('flightsList');
+  const seatsSection = document.getElementById('seatsSection');
+  const seatsList = document.getElementById('seatsList');
+  const flightLabel = document.getElementById('flightLabel');
+  const msg = document.getElementById('msg');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const myResBtn = document.getElementById('myResBtn');
+  const userInfo = document.getElementById('userInfo');
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    location.href = 'login.html';
+  } else {
+    userInfo.textContent = ' (autenticado)';
+  }
+
+  // Cerrar sesión
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('token');
+    location.href = 'login.html';
+  });
+
+  // Ver reservas
+  myResBtn.addEventListener('click', () => {
+    location.href = 'my-reservations.html';
+  });
+
+  // Cargar vuelos
+  async function loadFlights() {
+    msg.textContent = 'Cargando vuelos...';
+    try {
+      const res = await fetch(API_BASE + '/flights');
+      const flights = await res.json();
+      flightsList.innerHTML = '';
+
+      if (!Array.isArray(flights) || flights.length === 0) {
+        flightsList.innerHTML = '<li>No hay vuelos.</li>';
         msg.textContent = '';
-      } catch (err) {
-        msg.textContent = 'Error cargando vuelos: ' + err.message;
+        return;
       }
+
+      flights.forEach(f => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>#${f.id}</strong> 
+          ${f.origin} → ${f.destination}
+          <br>
+          <small>Salida: ${new Date(f.departure).toLocaleString()}</small>
+          <br>
+          <button data-id="${f.id}" data-origin="${f.origin}" data-dest="${f.destination}">
+            Ver asientos
+          </button>`;
+        flightsList.appendChild(li);
+      });
+
+      msg.textContent = '';
+    } catch (err) {
+      msg.textContent = 'Error cargando vuelos: ' + err.message;
     }
+  }
 
-    // Ver asientos
-    flightsList.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-id]');
-      if (!btn) return;
-      const flightId = btn.getAttribute('data-id');
-      const origin = btn.getAttribute('data-origin');
-      const dest = btn.getAttribute('data-dest');
-      await loadSeats(flightId, origin + ' → ' + dest);
-    });
+  // Mostrar asientos
+  flightsList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
 
-    // Cargar asientos
-    async function loadSeats(flightId, flightLabelText) {
-      msg.textContent = 'Cargando asientos...';
-      seatsList.innerHTML = '';
-      seatsSection.hidden = false;
-      flightLabel.textContent = flightLabelText;
+    const flightId = btn.getAttribute('data-id');
+    const origin = btn.getAttribute('data-origin');
+    const dest = btn.getAttribute('data-dest');
 
-      try {
-        const res = await fetch(API_BASE + '/flights/' + flightId + '/seats');
-        const seats = await res.json();
+    await loadSeats(flightId, `${origin} → ${dest}`);
+  });
 
-        if (!Array.isArray(seats) || seats.length === 0) {
-          seatsList.innerHTML = '<li>No hay asientos.</li>';
-          msg.textContent = '';
-          return;
-        }
+  // Cargar asientos
+  async function loadSeats(flightId, flightLabelText) {
+    msg.textContent = 'Cargando asientos...';
+    seatsList.innerHTML = '';
+    seatsSection.hidden = false;
+    flightLabel.textContent = flightLabelText;
 
-        seats.forEach(s => {
-          const li = document.createElement('li');
-          li.innerHTML = `${s.seat_number} — ${s.status}
-            ${s.status === 'available' ? `<button data-seat="${s.seat_number}" data-flight="${flightId}">Reservar</button>` : ''}`;
-          seatsList.appendChild(li);
-        });
+    try {
+      const res = await fetch(`${API_BASE}/flights/${flightId}/seats`);
+      const seats = await res.json();
+
+      if (!Array.isArray(seats) || seats.length === 0) {
+        seatsList.innerHTML = '<li>No hay asientos.</li>';
         msg.textContent = '';
-      } catch (err) {
-        msg.textContent = 'Error cargando asientos: ' + err.message;
+        return;
       }
+
+      seats.forEach(s => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${s.seat_number}</strong> — ${s.status}
+          ${s.status === 'available'
+            ? `<button data-seat="${s.seat_number}" data-flight="${flightId}">Reservar</button>`
+            : ''}
+        `;
+        seatsList.appendChild(li);
+      });
+
+      msg.textContent = '';
+    } catch (err) {
+      msg.textContent = 'Error cargando asientos: ' + err.message;
     }
+  }
 
-    // Reservar asiento
-    seatsList.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-seat]');
-      if (!btn) return;
-      const seat = btn.getAttribute('data-seat');
-      const flightId = btn.getAttribute('data-flight');
+  // Reservar
+  seatsList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-seat]');
+    if (!btn) return;
 
-      if (!confirm(`Confirmar reserva: vuelo ${flightId}, asiento ${seat}?`)) return;
+    const seat = btn.getAttribute('data-seat');
+    const flightId = btn.getAttribute('data-flight');
 
-      msg.textContent = 'Reservando...';
-      try {
-        const res = await fetch(API_BASE + '/reservations', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify({ flight_id: Number(flightId), seat_number: seat })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          msg.textContent = data.error || JSON.stringify(data);
-          return;
-        }
-        msg.textContent = '¡Reserva exitosa! Código: ' + data.code;
-        await loadSeats(flightId, flightLabel.textContent);
-      } catch (err) {
-        msg.textContent = 'Error al reservar: ' + err.message;
+    if (!confirm(`Confirmar reserva: vuelo ${flightId}, asiento ${seat}?`)) return;
+
+    msg.textContent = 'Reservando...';
+
+    try {
+      const res = await fetch(API_BASE + '/reservations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          flight_id: Number(flightId),
+          seat_number: seat
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        msg.textContent = data.error || JSON.stringify(data);
+        return;
       }
-    });
 
-    // Iniciar
-    loadFlights();
-  </script>
+      msg.textContent = '¡Reserva exitosa! Código: ' + data.code;
+
+      await loadSeats(flightId, flightLabel.textContent);
+
+    } catch (err) {
+      msg.textContent = 'Error al reservar: ' + err.message;
+    }
+  });
+
+  // Iniciar
+  loadFlights();
+</script>
+
 </body>
 </html>
-
-
