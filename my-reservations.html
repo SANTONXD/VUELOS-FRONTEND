@@ -5,49 +5,68 @@
   <title>Mis Reservas</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+
+<header>
   <h1>Mis Reservas</h1>
-  <button id="backBtn">Volver</button>
-  <ul id="reservationsList"></ul>
-  <p id="msg"></p>
+</header>
 
-  <script>
-    const API_BASE = 'https://proyecto-sis.onrender.com';
-    const token = localStorage.getItem('token');
-    if (!token) location.href = 'login.html';
+<nav>
+  <a href="flights.html">← Volver a vuelos</a>
+</nav>
 
-    const msg = document.getElementById('msg');
-    const list = document.getElementById('reservationsList');
-    const backBtn = document.getElementById('backBtn');
-    backBtn.onclick = () => location.href = 'flights.html';
+<main>
 
-    async function loadReservations() {
-      msg.textContent = 'Cargando...';
-      try {
-        const res = await fetch(API_BASE + '/reservations/my-reservations', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const data = await res.json();
-        list.innerHTML = '';
-        if (!Array.isArray(data) || data.length === 0) {
-          list.innerHTML = '<li>No tienes reservas aún.</li>';
-          msg.textContent = '';
-          return;
-        }
-        data.forEach(r => {
-          const li = document.createElement('li');
-          li.textContent = `${r.origin} → ${r.destination} | ${r.seat_number} | ${new Date(r.departure).toLocaleString()} | Código: ${r.code}`;
-          list.appendChild(li);
-        });
-        msg.textContent = '';
-      } catch (err) {
-        msg.textContent = 'Error: ' + err.message;
-      }
+<ul id="reservationsList"></ul>
+<p id="msg"></p>
+
+</main>
+
+<footer>
+  <a href="https://github.com/SANTONXD/VUELOS-FRONTEND/tree/main" target="_blank">
+    <svg height="24" width="24" viewBox="0 0 16 16" fill="#b44a55">
+      <path d="M8 0C3.58 0 0 ..."></path>
+    </svg>
+  </a>
+</footer>
+
+<script>
+  const API_BASE = 'https://proyecto-sis.onrender.com';
+  const token = localStorage.getItem('token');
+  if (!token) location.href = 'login.html';
+
+  const msg = document.getElementById('msg');
+  const list = document.getElementById('reservationsList');
+
+  async function loadReservations() {
+    msg.textContent = "Cargando...";
+
+    const res = await fetch(API_BASE + "/reservations/my-reservations", {
+      headers: { "Authorization": "Bearer " + token }
+    });
+
+    const data = await res.json();
+    list.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+      list.innerHTML = "<li>No tienes reservas aún.</li>";
+      msg.textContent = "";
+      return;
     }
 
-    loadReservations();
-  </script>
+    data.forEach(r => {
+      const li = document.createElement("li");
+      li.textContent =
+        `${r.origin} → ${r.destination} | ${r.seat_number} | ${new Date(r.departure).toLocaleString()} | Código: ${r.code}`;
+      list.appendChild(li);
+    });
+
+    msg.textContent = "";
+  }
+
+  loadReservations();
+</script>
+
 </body>
 </html>
-
-
