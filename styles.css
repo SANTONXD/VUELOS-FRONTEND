@@ -1,0 +1,96 @@
+/* === Estilos globales === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #ffffff;
+  color: #333;
+}
+
+main, header, section {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+h1, h2 {
+  text-align: center;
+  color: #b44a55;  /* rojo pastel suave */
+}
+
+/* === Botones === */
+button, a.btn {
+  background: #b44a55;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+button:hover, a.btn:hover {
+  background: #c25c67;
+}
+
+/* === Formularios === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* === Listas (vuelos, asientos, reservas) === */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Mensajes */
+#msg {
+  margin-top: 15px;
+  text-align: center;
+  color: #b44a55;
+  font-weight: bold;
+}
+
+/* Enlaces */
+a {
+  color: #b44a55;
+  font-weight: bold;
+}
+
+/* Contenedor principal */
+main {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Opcional: sombreado ligero */
+header, main {
+  background: #fff;
+}
