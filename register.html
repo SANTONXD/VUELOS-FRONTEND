@@ -5,69 +5,80 @@
   <title>Registro - Vuelos</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <main>
-    <h1>Registrar usuario</h1>
-    <form id="registerForm">
-      <label>
-        Nombre
-        <input name="name" required />
-      </label>
-      <br/>
-      <label>
-        Email
-        <input type="email" name="email" required />
-      </label>
-      <br/>
-      <label>
-        Contraseña
-        <input type="password" name="password" required minlength="6" />
-      </label>
-      <br/>
-      <button type="submit">Registrar</button>
-    </form>
 
-    <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+<header>
+  <h1>Crear Cuenta</h1>
+</header>
 
-    <section id="msg" aria-live="polite"></section>
-  </main>
+<nav>
+  <a href="index.html">Inicio</a>
+  <a href="login.html">Iniciar sesión</a>
+</nav>
 
-  <script>
-    const API_BASE = 'https://proyecto-sis.onrender.com';
-    const form = document.getElementById('registerForm');
-    const msg = document.getElementById('msg');
+<main>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      msg.textContent = 'Enviando...';
-      const fd = new FormData(form);
-      const body = {
-        name: fd.get('name'),
-        email: fd.get('email'),
-        password: fd.get('password')
-      };
+<form id="registerForm">
 
-      try {
-        const res = await fetch(API_BASE + '/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
+  <label>Nombre
+    <input name="name" required />
+  </label>
 
-        const data = await res.json();
-        if (!res.ok) {
-          msg.textContent = data.error || JSON.stringify(data);
-          return;
-        }
+  <label>Email
+    <input type="email" name="email" required />
+  </label>
 
-        msg.textContent = 'Registro exitoso. Redirigiendo a login...';
-        setTimeout(() => location.href = 'login.html', 900);
-      } catch (err) {
-        msg.textContent = 'Error: ' + err.message;
-      }
+  <label>Contraseña
+    <input type="password" name="password" required minlength="6" />
+  </label>
+
+  <button type="submit">Registrar</button>
+</form>
+
+<section id="msg"></section>
+
+</main>
+
+<footer>
+  <a href="https://github.com/SANTONXD/VUELOS-FRONTEND" target="_blank">
+    <svg height="24" width="24" viewBox="0 0 16 16" fill="#b44a55">
+      <path d="M8 0C3.58 0 0 3.58 ..."></path>
+    </svg>
+  </a>
+</footer>
+
+<script>
+  const API_BASE = 'https://proyecto-sis.onrender.com';
+  const form = document.getElementById('registerForm');
+  const msg = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    msg.textContent = "Enviando...";
+    const fd = new FormData(form);
+
+    const body = {
+      name: fd.get('name'),
+      email: fd.get('email'),
+      password: fd.get('password')
+    };
+
+    const res = await fetch(API_BASE + '/auth/register', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
     });
-  </script>
+
+    const data = await res.json();
+
+    if (!res.ok) return msg.textContent = data.error;
+
+    msg.textContent = "Registro exitoso.";
+    setTimeout(() => location.href = "login.html", 800);
+  });
+</script>
+
 </body>
 </html>
-
-
