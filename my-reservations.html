@@ -58,9 +58,94 @@
 
     data.forEach(r => {
       const li = document.createElement("li");
-      li.textContent =
-        `${r.origin} → ${r.destination} | ${r.seat_number} | ${new Date(r.departure).toLocaleString()} | Código: ${r.code}`;
+
+      const paid = (r.status === 'paid' || r.status === 'pagado');
+
+      li.innerHTML = `
+        <div class="res-info">
+          <span class="res-route">${r.origin} → ${r.destination}</span>
+          <span class="res-seat">${r.seat_number}</span>
+          <span class="res-depart">${new Date(r.departure).toLocaleString()}</span>
+          <span class="res-code">Código: ${r.code}</span>
+        </div>
+        <div class="res-actions">
+          ${paid ? '<strong class="paid-label">Pagado</strong>' : `<button data-pay="${r.reservation_id}">Pagar</button>`}
+        </div>
+      `;
+
       list.appendChild(li);
+    });
+
+    // Manejo de evento para "Pagar" y formulario inline
+    list.addEventListener('click', async (e) => {
+      const payBtn = e.target.closest('button[data-pay]');
+      if (!payBtn) return;
+
+      const reservationId = payBtn.getAttribute('data-pay');
+      const li = payBtn.closest('li');
+
+      // Evitar múltiples formularios
+      if (li.querySelector('form.pay-form')) return;
+
+      // Formulario simple (simulación de pago)
+      li.insertAdjacentHTML('beforeend', `
+        <form class="pay-form" data-id="${reservationId}">
+          <label>Nombre en tarjeta<input name="card_name" required></label>
+          <label>N.º tarjeta<input name="card_number" required maxlength="19"></label>
+          <label>Expira<input name="expiry" placeholder="MM/AA" required></label>
+          <label>CVV<input name="cvv" required maxlength="4"></label>
+          <div>
+            <button type="submit">Confirmar pago</button>
+            <button type="button" class="cancel-pay">Cancelar</button>
+          </div>
+        </form>
+      `);
+
+      const form = li.querySelector('form.pay-form');
+
+      // Cancelar
+      form.querySelector('.cancel-pay').addEventListener('click', () => {
+        form.remove();
+      });
+
+      // Enviar (simulado)
+      form.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        msg.textContent = 'Procesando pago...';
+
+        const fd = new FormData(form);
+        const body = {
+          card_name: fd.get('card_name'),
+          card_number: fd.get('card_number'),
+          expiry: fd.get('expiry'),
+          cvv: fd.get('cvv')
+        };
+
+        try {
+          const res = await fetch(`${API_BASE}/reservations/${reservationId}/pay`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(body)
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+            msg.textContent = data.error || 'Error procesando el pago';
+            return;
+          }
+
+          // Mostrar resultado y quitar reserva de la lista
+          msg.textContent = data.message || 'Pago realizado';
+          // Remover el elemento de la lista
+          li.remove();
+
+        } catch (err) {
+          msg.textContent = 'Error al pagar: ' + err.message;
+        }
+      });
     });
 
     msg.textContent = "";
