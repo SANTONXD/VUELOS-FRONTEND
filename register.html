@@ -31,11 +31,7 @@
   </label>
 
   <label>Contraseña
-    <input type="password" name="password" required minlength="8" placeholder="Mín. 8 caracteres, 1 Mayúscula, 1 Número" />
-  </label>
-
-  <label>Confirmar Contraseña
-    <input type="password" name="confirmPassword" required />
+    <input type="password" name="password" required minlength="6" />
   </label>
 
   <button type="submit">Registrar</button>
@@ -62,6 +58,7 @@
   </a>
 </footer>
 
+
 <script>
   const API_BASE = 'https://proyecto-sis.onrender.com';
   const form = document.getElementById('registerForm');
@@ -70,47 +67,30 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    msg.textContent = "Validando..."; // Mensaje temporal
+    msg.textContent = "Enviando...";
     const fd = new FormData(form);
-
-    // Validar visualmente que coincidan antes de enviar (opcional pero recomendado para UX)
-    if(fd.get('password') !== fd.get('confirmPassword')) {
-        return msg.textContent = "Las contraseñas no coinciden";
-    }
 
     const body = {
       name: fd.get('name'),
       email: fd.get('email'),
-      password: fd.get('password'),
-      confirmPassword: fd.get('confirmPassword') // Enviamos el nuevo campo
+      password: fd.get('password')
     };
 
-    try {
-        msg.textContent = "Enviando...";
-        
-        const res = await fetch(API_BASE + '/auth/register', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
+    const res = await fetch(API_BASE + '/auth/register', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (!res.ok) {
-            // Mostramos el error específico que viene del backend (ej: "Falta mayúscula")
-            return msg.textContent = data.error; 
-        }
+    if (!res.ok) return msg.textContent = data.error;
 
-        msg.textContent = "Registro exitoso.";
-        msg.style.color = "green"; // Un pequeño toque visual
-        setTimeout(() => location.href = "login.html", 1500); // Un poco más de tiempo para leer el mensaje
-
-    } catch (error) {
-        msg.textContent = "Error de conexión con el servidor.";
-        console.error(error);
-    }
+    msg.textContent = "Registro exitoso.";
+    setTimeout(() => location.href = "login.html", 800);
   });
 </script>
 
 </body>
 </html>
+
