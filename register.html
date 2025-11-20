@@ -1,96 +1,189 @@
 <!doctype html>
+
 <html lang="es">
+
 <head>
+
   <meta charset="utf-8" />
+
   <title>Registro - Vuelos</title>
+
   <link rel="stylesheet" href="styles.css">
+
   <link rel="icon" type="image/png" href="favicon/editar.png">
+
 </head>
+
+
 
 <body>
 
+
+
 <header>
+
   <h1>Crear Cuenta</h1>
+
 </header>
 
+
+
 <nav>
+
   <a href="index.html">Inicio</a>
+
   <a href="login.html">Iniciar sesión</a>
+
 </nav>
+
+
 
 <main>
 
+
+
 <form id="registerForm">
 
+
+
   <label>Nombre
+
     <input name="name" required />
+
   </label>
+
+
 
   <label>Email
+
     <input type="email" name="email" required />
+
   </label>
+
+
 
   <label>Contraseña
+
     <input type="password" name="password" required minlength="6" />
+
   </label>
 
+
+
   <button type="submit">Registrar</button>
+
 </form>
+
+
 
 <section id="msg"></section>
 
+
+
 </main>
 
+
+
 <footer>
+
   <a href="https://github.com/SANTONXD/VUELOS-FRONTEND" target="_blank">
+
     <svg height="24" width="24" viewBox="0 0 16 16" fill="#b44a55" aria-hidden="true">
+
       <path fill-rule="evenodd"
+
         d="M8 .198a8 8 0 0 0-2.528 15.598c.4.074.547-.174.547-.386
+
         0-.19-.007-.693-.01-1.36-2.226.484-2.695-1.073-2.695-1.073-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.803.057 1.225.825 
+
         1.225.825.714 1.223 1.873.87 2.33.665.072-.517.28-.87.508-1.07-1.777-.202-3.644-.888-3.644-3.953
+
         0-.873.312-1.587.823-2.147-.083-.203-.357-1.018.078-2.122 0 0 
+
         .67-.215 2.2.82a7.548 7.548 0 0 1 2-.27c.68.003 1.37.092 
+
         2 .27 1.53-1.035 2.197-.82 2.197-.82.437 1.104.163 1.919.08 2.122.513.56.822 
+
         1.274.822 2.147 0 3.073-1.87 3.748-3.654 3.947.288.25.543.738.543 1.486 
+
         0 1.072-.01 1.935-.01 2.197 0 .214.145.463.55.384A8 8 0 0 0 8.001.196z">
+
       </path>
+
     </svg>
+
   </a>
+
 </footer>
 
 
+
+
+
 <script>
+
   const API_BASE = 'https://proyecto-sis.onrender.com';
+
   const form = document.getElementById('registerForm');
+
   const msg = document.getElementById('msg');
 
+
+
   form.addEventListener('submit', async (e) => {
+
     e.preventDefault();
 
+
+
     msg.textContent = "Enviando...";
+
     const fd = new FormData(form);
 
+
+
     const body = {
+
       name: fd.get('name'),
+
       email: fd.get('email'),
+
       password: fd.get('password')
+
     };
 
+
+
     const res = await fetch(API_BASE + '/auth/register', {
+
       method: "POST",
+
       headers: { "Content-Type": "application/json" },
+
       body: JSON.stringify(body)
+
     });
+
+
 
     const data = await res.json();
 
+
+
     if (!res.ok) return msg.textContent = data.error;
 
+
+
     msg.textContent = "Registro exitoso.";
+
     setTimeout(() => location.href = "login.html", 800);
+
   });
+
 </script>
 
-</body>
-</html>
 
+
+</body>
+
+</html>
